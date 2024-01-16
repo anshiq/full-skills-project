@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 const saltRounds: number = parseInt(process.env.SALTROUNDS as string, 10) || 10;
-const jwtSecret = process.env.JWTSECRET || "";
+// const jwtSecret = process.env.JWTSECRET || "";
+const jwtSecret = "secret";
 const hashPassword = async (password: string) => {
   try {
     const salt = await bcrypt.genSalt(saltRounds);
@@ -22,9 +23,11 @@ const comparePassword = async (password: string, hashedPassword: string) => {
   }
 };
 const createJwt = (id: string) => {
-  const token = jwt.sign({ _id: id }, jwtSecret, {
-    expiresIn: "24h",
-  });
+  const token = jwt.sign({ _id: id }, jwtSecret,
+  //    {
+  //   expiresIn: "24h",
+  // }
+  );
   return token;
 };
 
