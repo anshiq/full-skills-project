@@ -1,8 +1,20 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+import crypto from "crypto";
 const saltRounds: number = parseInt(process.env.SALTROUNDS as string, 10) || 10;
 // const jwtSecret = process.env.JWTSECRET || "";
 const jwtSecret = "secret";
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: "anshikthind@gmail.com",
+    pass: "pnff bbip tzwr kinx",
+  },
+});
 const hashPassword = async (password: string) => {
   try {
     const salt = await bcrypt.genSalt(saltRounds);
@@ -23,12 +35,35 @@ const comparePassword = async (password: string, hashedPassword: string) => {
   }
 };
 const createJwt = (id: string) => {
-  const token = jwt.sign({ _id: id }, jwtSecret,
-  //    {
-  //   expiresIn: "24h",
-  // }
+  const token = jwt.sign(
+    { _id: id },
+    jwtSecret,
+    //    {
+    //   expiresIn: "24h",
+    // }
   );
   return token;
 };
-
-export { hashPassword, comparePassword, createJwt };
+const sendVerificationEmail = ( mailOptionsObject: any) => {
+  const mailOptions = {
+    ...mailOptionsObject,
+    from: "anshikthind@gmail.com", // Sender's email
+  };
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log("Email verification error: " + error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
+  });
+};
+const generateVerificationToken = () => {
+  return crypto.randomBytes(32).toString("hex");
+};
+export {
+  generateVerificationToken,
+  hashPassword,
+  comparePassword,
+  createJwt,
+  sendVerificationEmail,
+};

@@ -15,6 +15,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="h-screen flex flex-col">
+        <div
+          className="absolute hidden right-0 bottom-6  rounded-l "
+          id="notification"
+        ></div>
         <Navbar />
         <div className="bg-gray-700 flex-grow">{children}</div>
       </body>

@@ -1,5 +1,6 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 import { userRouter } from "./routes/userRoutes";
 import { connect_db } from "./db/connect";
 import { verifyToken } from "./middlewares/authMiddleware";
@@ -9,8 +10,9 @@ const port: string | number = process.env.PORT || 8080;
 const uri: string = process.env.MONGOURI || "";
 const app: Express = express();
 app.use(express.json());
+app.use(cors());
 app.use("/user", userRouter);
-app.use("/auth",verifyToken, authRouter);
+app.use("/auth", verifyToken, authRouter);
 const start = () => {
   try {
     connect_db(uri);
