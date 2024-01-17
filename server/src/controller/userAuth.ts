@@ -70,6 +70,7 @@ const verifyEmailToken = async (req: Request, res: Response) => {
         .json({ message: "User not found or already verified." });
     }
     user.verified = true;
+    user.verifyToken = undefined;
     await user.save(); // Save the updated user record
     res.status(200).json({ message: "Email verified successfully." });
   } catch (error) {

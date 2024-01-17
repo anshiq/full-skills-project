@@ -10,11 +10,14 @@ function page(props: any) {
   if (tokenType === "verify-token") {
     return (
       <div>
-        {token} <>{tokenType}</>
+        <VerifyEmail token={token} />
       </div>
     );
   }
 }
+const VerifyEmail = ({ token }: any) => {
+  return <>hi</>;
+};
 const ResetPassword = ({ token }: any) => {
   const [password, setPassword] = useState({
     password: "",
@@ -24,7 +27,7 @@ const ResetPassword = ({ token }: any) => {
     e.preventDefault();
     if (password.password === password.re_password) {
       axiosFetch.post(
-        "/user/verify-forgot-token", // Corrected the endpoint (assuming it was a typo in the original)
+        "/user/verify-forgot-token",
         {
           password: password.password,
           token: token,
@@ -64,7 +67,7 @@ const ResetPassword = ({ token }: any) => {
                     }));
                   }}
                   required
-                  // minLength={8}
+                  minLength={8}
                   className="mt-1 p-2 w-full border rounded-md"
                 />
               </div>
@@ -88,7 +91,7 @@ const ResetPassword = ({ token }: any) => {
                     }));
                   }}
                   required
-                  // minLength={8}
+                  minLength={8}
                   className="mt-1 p-2 w-full border rounded-md"
                 />
               </div>
