@@ -168,5 +168,43 @@ function SignUp() {
     </form>
   );
 }
+function ForgotPassword() {
+  const [email, setEmail] = useState("");
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <label
+            htmlFor="name"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Enter Your Email ...{" "}
+          </label>
+          <input
+            type="email"
+            id="name"
+            name="name"
+            placeholder="example@gmail.com"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+            required
+            className="mt-1 p-2 w-full border rounded-md"
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        >
+          Send Reset Link !!!
+        </button>
+      </form>
+    </>
+  );
+}
 
-export { SignUp, Login };
+export { SignUp, Login, ForgotPassword };
