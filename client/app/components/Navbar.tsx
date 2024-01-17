@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import React, { useState } from "react";
 
 function Navbar() {
@@ -24,8 +25,12 @@ function Navbar() {
           </ul>
           <ul className="flex mob:space-x-4 mob:gap-0 gap-2 flex-col mob:flex-row ">
             <li className="text-white">Contact</li>
-            <li className="text-white">Login</li>
-            <li className="text-white">Signup</li>
+            <li onClick={() => setToggleNav(!toggleNav)} className="text-white">
+              <a href="/user?type=0"> Login</a>
+            </li>
+            <li onClick={() => setToggleNav(!toggleNav)} className="text-white">
+              <a href="/user?type=1">Signup </a>
+            </li>
           </ul>
         </div>
         <span
