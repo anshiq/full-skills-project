@@ -1,10 +1,8 @@
 import { showNotification } from "@/lib/Notification";
 import { axiosFetch } from "@/lib/axiosConfig";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 
 function Login() {
-  const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -116,7 +114,10 @@ function SignUp() {
       )
       .then((data) => {
         if (data.data.success) {
-          // notify and redirection
+          showNotification({ text: data.data.data.msg, color: "green" });
+          setTimeout(() => {
+            window.location.replace("/user?type=0");
+          }, 1500);
         }
       });
   };
@@ -221,7 +222,6 @@ function SignUp() {
   );
 }
 function ForgotPassword() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

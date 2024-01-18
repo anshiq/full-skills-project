@@ -29,7 +29,7 @@ async function signupUser(req: Request, res: Response) {
       };
       sendVerificationEmail(mailoptions);
 
-      res.json({ success: true, data: data });
+      res.json({ success: true, data: { msg: "user Signup Successfully !!" } });
     }
   } catch (error) {
     res.json({ success: false, err: JSON.stringify({ error: error }) });
@@ -106,8 +106,7 @@ async function verifyForgotPasswordToken(req: Request, res: Response) {
       data.save();
       res.json({
         success: true,
-        data: data,
-        msg: "password updated successfully",
+        data: { msg: "password updated successfully" },
       });
     }
   } catch (error) {
@@ -131,7 +130,12 @@ async function forgotPassword(req: Request, res: Response) {
         text: `Please click the following link to Reset Password: ${verificationLink}`,
       };
       sendVerificationEmail(mailoptions);
-      res.json({ success: true, data: user });
+      res.json({
+        success: true,
+        data: {
+          msg: "Please Check your mail for reset password.",
+        },
+      });
     }
   } catch (error) {
     res.json({

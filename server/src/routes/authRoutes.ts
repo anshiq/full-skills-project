@@ -1,8 +1,5 @@
 import { Router } from "express";
-import { loginUser, signupUser } from "../controller/userAuth";
-
+import { getUserDetails } from "../controller/authedController";
 const authRouter = Router();
-authRouter.route("/api").get((req,res)=>{
-    res.send("Hello");
-});
+authRouter.route("/api").get(getUserDetails);
 export { authRouter };

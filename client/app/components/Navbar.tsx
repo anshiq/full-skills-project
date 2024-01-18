@@ -1,9 +1,30 @@
 "use client";
-import Link from "next/link";
-import React, { useState } from "react";
-
+import { axiosFetch, axiosFetchAuth } from "@/lib/axiosConfig";
+import React, { useEffect, useState } from "react";
+import {
+  Menubar,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "@/components/ui/menubar";
 function Navbar() {
   const [toggleNav, setToggleNav] = useState(false);
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token && user === null) {
+      axiosFetchAuth(token)
+        .get("/api")
+        .then((data) => {
+          if (data.data.success) {
+            setUser(data.data.data);
+          }
+        });
+    }
+  }, []);
   return (
     <nav className="bg-gray-800 mob:p-4 p-0 w-full">
       <div className="container mx-auto flex justify-between items-center">
@@ -26,10 +47,20 @@ function Navbar() {
           <ul className="flex mob:space-x-4 mob:gap-0 gap-2 flex-col mob:flex-row ">
             <li className="text-white">Contact</li>
             <li onClick={() => setToggleNav(!toggleNav)} className="text-white">
-              <a href="/user?type=0"> Login</a>
+              {!user ? (
+                <a href="/user?type=0"> Login</a>
+              ) : (
+                <>
+                  <User data={user} />
+                </>
+              )}
             </li>
             <li onClick={() => setToggleNav(!toggleNav)} className="text-white">
-              <a href="/user?type=1">Signup </a>
+              {!user ? (
+                <a href="/user?type=1">Signup </a>
+              ) : (
+                <button className="p-2 bg-red-300">Logout</button>
+              )}
             </li>
           </ul>
         </div>
@@ -45,5 +76,9 @@ function Navbar() {
     </nav>
   );
 }
-
+const User = ({ data }: any) => {
+  console.log(data);
+  return <div>
+        kohi</div>;
+};
 export default Navbar;
