@@ -1,6 +1,10 @@
+import { showNotification } from "@/lib/Notification";
+import { axiosFetch } from "@/lib/axiosConfig";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 function Login() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -8,7 +12,33 @@ function Login() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {};
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    localStorage.clear();
+    localStorage.removeItem("token");
+    axiosFetch
+      .post(
+        "/user/login",
+        {
+          email: formData.email,
+          password: formData.password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      )
+      .then((data) => {
+        if (data.data.success) {
+          localStorage.setItem("token", data.data.data.token);
+          showNotification({ text: data.data.data.msg, color: "green" });
+          setTimeout(() => {
+            window.location.replace("/");
+          }, 1500);
+        }
+      });
+  };
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-4">
@@ -67,7 +97,29 @@ function SignUp() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {};
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    axiosFetch
+      .post(
+        "/user/signup",
+        {
+          name: formData.name,
+          mobile: formData.mobile,
+          email: formData.email,
+          password: formData.password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      )
+      .then((data) => {
+        if (data.data.success) {
+          // notify and redirection
+        }
+      });
+  };
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-4">
@@ -169,9 +221,30 @@ function SignUp() {
   );
 }
 function ForgotPassword() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    axiosFetch
+      .post(
+        "/user/forgot-password",
+        {
+          email: email,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+      )
+      .then((data) => {
+        if (data.data.success) {
+          showNotification({ text: data.data.data.msg, color: "green" });
+          setTimeout(() => {
+            window.location.replace("/user?type=0");
+          }, 1500);
+        }
+      });
   };
   return (
     <>

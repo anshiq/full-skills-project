@@ -1,13 +1,14 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { axiosFetch } from "@/lib/axiosConfig";
 function page(props: any) {
   const tokenType = props.params.token || "";
   const token = props.searchParams.token || "";
+  console.log(token, tokenType);
   if (tokenType === "reset-password") {
     return <ResetPassword token={token} />;
   }
-  if (tokenType === "verify-token") {
+  if (tokenType === "verify-email") {
     return (
       <div>
         <VerifyEmail token={token} />
@@ -15,8 +16,20 @@ function page(props: any) {
     );
   }
 }
-const VerifyEmail = ({ token }: any) => {
-  return <>hi</>;
+const VerifyEmail = async ({ token }: any) => {
+  const data = await axiosFetch.post(
+    "/user/verify-user",
+    {
+      token: token,
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+  const msg = data.data.data.msg;
+  return <>{msg}</>;
 };
 const ResetPassword = ({ token }: any) => {
   const [password, setPassword] = useState({
@@ -34,7 +47,7 @@ const ResetPassword = ({ token }: any) => {
         },
         {
           headers: {
-            "Content-Type": "application/json", // Corrected the headers format
+            "Content-Type": "application/json",
           },
         },
       );

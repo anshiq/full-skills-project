@@ -16,7 +16,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="h-screen flex flex-col">
         <div
-          className="absolute hidden right-0 bottom-6  rounded-l "
+          className="absolute w-full hidden top-0 left-0 p-4 rounded-l text-black"
           id="notification"
         ></div>
         <Navbar />

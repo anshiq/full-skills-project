@@ -45,39 +45,50 @@ async function loginUser(req: Request, res: Response) {
       const isUser = await comparePassword(password, data.password);
       if (isUser) {
         const token = createJwt(data._id.toString());
-        res.json({ success: true, data: { token: token } });
+        res.json({
+          success: true,
+          data: { token: token, msg: "Login Successfully !!!" },
+        });
       } else {
-        res.json({ success: false, err: "Wrong Credentials" });
+        res.json({ success: false, data: { msg: "Wrong Credentials" } });
       }
+    } else {
+      res.json({ success: false, data: { msg: "Wrong Credentials" } });
     }
   } catch (error) {
-    res.json({ success: false, err: JSON.stringify({ error: error }) });
+    res.json({
+      success: false,
+      data: { msg: JSON.stringify({ error: error }) },
+    });
     console.log(error);
   }
-
-  return res.json();
 }
 const verifyEmailToken = async (req: Request, res: Response) => {
   const token = req.body.token;
   if (!token) {
-    return res.status(400).json({ message: "Verification token is missing." });
+    return res.status(400).json({ msg: "Verification token is missing." });
   }
   try {
     const user = await User.findOne({ verifyToken: token });
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: "User not found or already verified." });
+      return res.status(200).json({
+        success: true,
+        data: { msg: "User not found or already verified." },
+      });
     }
     user.verified = true;
     user.verifyToken = undefined;
     await user.save(); // Save the updated user record
-    res.status(200).json({ message: "Email verified successfully." });
+    console.log(user);
+    res.status(200).json({
+      success: true,
+      data: { msg: "User  verification successfully." },
+    });
   } catch (error) {
     console.error(error);
     res
       .status(500)
-      .json({ message: "An error occurred during email verification." });
+      .json({ msg: "An error occurred during email verification." });
   }
 };
 async function verifyForgotPasswordToken(req: Request, res: Response) {
@@ -120,11 +131,13 @@ async function forgotPassword(req: Request, res: Response) {
         text: `Please click the following link to Reset Password: ${verificationLink}`,
       };
       sendVerificationEmail(mailoptions);
-
       res.json({ success: true, data: user });
     }
   } catch (error) {
-    res.json({ success: false, err: JSON.stringify({ error: error }) });
+    res.json({
+      success: false,
+      data: { msg: JSON.stringify({ error: error }) },
+    });
     console.log(error);
   }
 }
