@@ -1,4 +1,4 @@
-import { exec } from "child_process";
+import { ExecException, exec } from "child_process";
 
 const exeJava = () => {
   const javaCode = `
@@ -16,16 +16,19 @@ public class HelloWorld {
   const dockerCommand = `docker run --rm -i openjdk /bin/sh -c 'echo "${escapedJavaCode}" > HelloWorld.java && javac HelloWorld.java && java HelloWorld'`;
 
   // Execute the Docker command
-  const childProcess = exec(dockerCommand, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Execution error: ${error.message}`);
-      // Handle errors depending on your use case
-      return;
-    }
+  const childProcess = exec(
+    dockerCommand,
+    (error: ExecException | null, stdout: string, stderr: string) => {
+      if (error) {
+        console.error(`Execution error: ${error.message}`);
+        // Handle errors depending on your use case
+        return;
+      }
 
-    console.log(`Execution success. Output: ${stdout}`);
-    // Handle the output depending on your use case
-  });
+      console.log(`Execution success. Output: ${stdout}`);
+      // Handle the output depending on your use case
+    },
+  );
 };
 
 // Calling the function to test it
