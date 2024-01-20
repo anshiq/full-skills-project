@@ -20,7 +20,7 @@ function Navbar() {
   }, []);
 
   const User = ({ data }: any) => {
-    console.log(data);
+    // console.log(data);
     return (
       <button className="text-white p-2 rounded-md bg-gray-900">
         {data.name}

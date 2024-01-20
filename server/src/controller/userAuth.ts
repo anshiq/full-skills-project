@@ -10,6 +10,16 @@ import {
 async function signupUser(req: Request, res: Response) {
   try {
     const { name, email, password, mobile } = req.body;
+    if (!name || !email || !password || !mobile) {
+      return res
+        .status(400)
+        .json({ success: false, error: "All fields are required." });
+    }
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      res.json({ success: false, data: { msg: "User already Exist..." } });
+      return;
+    }
     const hashedpassword = await hashPassword(password);
     const token = generateVerificationToken();
     const data = await User.create({
@@ -23,19 +33,20 @@ async function signupUser(req: Request, res: Response) {
     if (data) {
       const verificationLink = `${process.env.weburl}/user/verify-email?token=${token}`;
       const mailoptions = {
-        to: data.email, // Recipient's email
+        to: data.email,
         subject: "Email Verification",
         text: `Please click the following link to verify your email: ${verificationLink}`,
       };
       sendVerificationEmail(mailoptions);
-
-      res.json({ success: true, data: { msg: "user Signup Successfully !!" } });
+      res.json({ success: true, data: { msg: "User signup successful." } });
     }
-  } catch (error) {
-    res.json({ success: false, err: JSON.stringify({ error: error }) });
-    console.log(error);
+  } catch (error: any) {
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ success: false, error: error.message });
+    }
+    res.status(500).json({ success: false, error: "Internal Server Error" });
+    console.error(error);
   }
-  return;
 }
 async function loginUser(req: Request, res: Response) {
   try {

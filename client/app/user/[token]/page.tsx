@@ -1,10 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { axiosFetch } from "@/lib/axiosConfig";
+import { showNotification } from "@/lib/Notification";
 function page(props: any) {
   const tokenType = props.params.token || "";
   const token = props.searchParams.token || "";
-  console.log(token, tokenType);
   if (tokenType === "reset-password") {
     return <ResetPassword token={token} />;
   }
@@ -52,6 +52,7 @@ const ResetPassword = ({ token }: any) => {
         },
       );
     } else {
+      showNotification({ text: "Password Must be Same..", color: "red" });
     }
   };
   return (
