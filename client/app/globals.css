@@ -6,3 +6,9 @@
 .transition-top {
   transition: top 1s ease; /* You can adjust the duration and easing function as needed */
 }
+.hide-scroll-bar{
+    -ms-overflow-style: none;
+}
+.hide-scroll-bar::-webkit-scrollbar{
+    display: none;
+}

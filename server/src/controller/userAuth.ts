@@ -134,7 +134,7 @@ async function forgotPassword(req: Request, res: Response) {
       user.verifyToken = token;
       console.log(token);
       user.save();
-      const verificationLink = `${process.env.weburl}/user/reset-password?token=${token}`;
+      const verificationLink = `http://localhost:3000/user/reset-password?token=${token}`;
       const mailoptions = {
         to: user.email,
         subject: "Reset password",
