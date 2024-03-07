@@ -14,6 +14,7 @@ const exeCpp = async (cppCode: string, inputText: string) => {
     }
     return { result: stdout };
   } catch (error: any) {
+    console.log(error);
     return { result: error.stderr };
   }
 };

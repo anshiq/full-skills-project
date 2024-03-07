@@ -1,8 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-c_cpp";
-import "ace-builds/src-noconflict/theme-twilight"; // You can change the theme as needed
+import "ace-builds/src-noconflict/theme-twilight";
 import { axiosFetchAuth } from "@/lib/axiosConfig";
 
 const Editor = () => {
@@ -10,6 +10,19 @@ const Editor = () => {
   const [loading, setLoading] = useState(false);
   const [output, setOutput] = useState("");
   const [textInputArea, setTextInputArea] = useState("");
+  const [expectedOutput, setExpectedOutput] = useState("");
+  const [outputColor, setOutputColor] = useState("text-white"); 
+  const [expectedOutputColor, setExpectedOutputColor] = useState("text-white"); 
+
+  useEffect(() => {
+    if (output === expectedOutput) {
+      setOutputColor("text-green-500"); 
+      setExpectedOutputColor("text-green-500");
+    } else {
+      setOutputColor("text-red-500"); 
+      setExpectedOutputColor("text-red-500");
+    }
+  }, [output, expectedOutput]);
 
   const handleChange = (newValue: any) => {
     setCode(newValue);
@@ -17,7 +30,6 @@ const Editor = () => {
 
   const handleSubmit = () => {
     setLoading(true);
-    console.log(textInputArea);
     const token = localStorage.getItem("token");
     if (token) {
       axiosFetchAuth(token)
@@ -76,7 +88,7 @@ const Editor = () => {
         }}
       />
       <div className="flex flex-col md:flex-row gap-4 mt-4">
-        <div className="w-full md:w-1/2">
+        <div className="w-full md:w-1/3">
           <label className="text-white">
             Input (Keep it empty if no input.)
           </label>
@@ -87,12 +99,21 @@ const Editor = () => {
             value={textInputArea}
           />
         </div>
-        <div className="w-full md:w-1/2">
+        <div className="w-full md:w-1/3">
           <label className="text-white">Output</label>
           <textarea
-            className="hide-scroll-bar text-white w-full bg-gray-950 h-[10rem]  overflow-scroll border border-gray-600 rounded-md p-2"
+            className={`hide-scroll-bar ${outputColor} w-full bg-gray-950 h-[10rem]  overflow-scroll border border-gray-600 rounded-md p-2`}
             style={{ whiteSpace: "pre-line" }}
             value={output}
+          />
+        </div>
+        <div className="w-full md:w-1/3">
+          <label className="text-white">Expected Output</label>
+          <textarea
+            className={`hide-scroll-bar ${expectedOutputColor} w-full bg-gray-950 h-[10rem]  overflow-scroll border border-gray-600 rounded-md p-2`}
+            style={{ whiteSpace: "pre-line" }}
+            value={expectedOutput}
+            onChange={(e) => setExpectedOutput(e.target.value)}
           />
         </div>
       </div>

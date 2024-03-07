@@ -1,7 +1,6 @@
 "use client";
 import { axiosFetchAuth } from "@/lib/axiosConfig";
 import React, { useEffect, useState } from "react";
-
 function Navbar() {
   const [toggleNav, setToggleNav] = useState(false);
   const [user, setUser] = useState(null);
@@ -9,25 +8,42 @@ function Navbar() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token && user === null) {
-      axiosFetchAuth(token)
-        .get("/api")
-        .then((data) => {
-          if (data.data.success) {
-            setUser(data.data.data);
-          }
-        });
+      try {
+        axiosFetchAuth(token)
+          .get("/api")
+          .then((data) => {
+            if (data.data.success) {
+              setUser(data.data.data);
+            }
+          });
+      } catch (error) {
+        console.log(error);
+      }
     }
   }, []);
 
   const User = ({ data }: any) => {
-    // console.log(data);
     return (
       <button className="text-white p-2 rounded-md bg-gray-900">
         {data.name}
       </button>
     );
   };
-
+  useEffect(() => {
+    const handleResize = () => {
+      if (
+        window.innerWidth >
+        40 * parseFloat(getComputedStyle(document.documentElement).fontSize)
+      ) {
+        setToggleNav(false);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   return (
     <nav className="bg-gray-800 mob:p-4 p-0 w-full">
       <div className="container mx-auto flex justify-between items-center">
@@ -39,7 +55,7 @@ function Navbar() {
             "flex gap-2 bg-gray-800 w-full absolute flex-col p-2 mob:p-0 mob:gap-0 mob:flex-row mob:justify-between mob:static mob:top-auto" +
             (toggleNav
               ? " top-10 transition-top"
-              : " top-[-11rem] transition-top")
+              : " top-[-19rem] transition-top")
           }
         >
           <ul className="flex mob:space-x-4 mob:gap-0 gap-2 flex-col items-center justify-center mob:flex-row ">
